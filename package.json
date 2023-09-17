@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev:server": "bun run --hot server/index.tsx",
+    "dev:client": "bunx --bun vite",
+    "build": "bunx --bun vite build"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.1.8",
+    "hono": "^3.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "swr": "^2.2.2",
+    "wouter": "^2.11.0",
+    "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.2",
+    "@types/react": "^18.2.18",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.4",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.9"
+  }
+}
