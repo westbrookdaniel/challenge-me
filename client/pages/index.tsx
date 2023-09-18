@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { trpc } from "../trpc";
+import { useAuth } from "../main";
 
 export function Home() {
   const challenges = trpc.challenge.challenges.useQuery();
@@ -16,9 +17,19 @@ export function Home() {
         Get assigned a random challenger, and compete for victory!
       </p>
 
-      <div className="flex space-x-2 mt-4">
+      <div className="flex space-x-2 items-center mt-4">
         {me.data ? (
-          <p>Hello {me.data.name}</p>
+          <>
+            <button
+              onClick={() => {
+                useAuth.getState().setToken(null);
+                me.refetch();
+              }}
+            >
+              Logout
+            </button>
+            <p className="p-2">Hello {me.data.name}</p>
+          </>
         ) : (
           <>
             <Link href="/login">

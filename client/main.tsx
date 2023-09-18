@@ -1,23 +1,29 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import { Route, Router } from "wouter";
-import { Home } from "./pages";
+import { Home } from "./pages/Home";
 import { Login } from "./pages/login";
 import { trpc } from "./trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { create } from "zustand";
 import { Signup } from "./pages/signup";
+import { persist } from "zustand/middleware";
 
 type AuthStore = {
   token: string | null;
   setToken: (token: string | null) => void;
 };
 
-export const useAuth = create<AuthStore>((set) => ({
-  token: null,
-  setToken: (token) => set({ token }),
-}));
+export const useAuth = create(
+  persist<AuthStore>(
+    (set) => ({
+      token: null,
+      setToken: (token) => set({ token }),
+    }),
+    { name: "auth-storage" },
+  ),
+);
 
 function App() {
   const [queryClient] = useState(() => new QueryClient());
