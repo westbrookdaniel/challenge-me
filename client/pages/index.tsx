@@ -24,7 +24,7 @@ export function Home() {
             <Link href="/login">
               <a className="button">Login</a>
             </Link>
-            <Link href="/login">
+            <Link href="/signup">
               <a className="button">Sign Up</a>
             </Link>
           </>

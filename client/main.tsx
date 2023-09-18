@@ -7,6 +7,7 @@ import { trpc } from "./trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { create } from "zustand";
+import { Signup } from "./pages/signup";
 
 type AuthStore = {
   token: string | null;
@@ -45,6 +46,9 @@ function App() {
           </Route>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/signup">
+            <Signup />
           </Route>
         </Router>
       </QueryClientProvider>
