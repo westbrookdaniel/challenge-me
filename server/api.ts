@@ -27,7 +27,7 @@ export const challengeRouter = router({
   challengeByDate: procedure
     .input(z.object({ date: z.string() }))
     .query(({ input }) => getChallengeByDate(input.date)),
-  createChallenge: protectedProcedure.input(DbChallenge).query(({ input }) => {
+  createChallenge: protectedProcedure.input(DbChallenge).mutation(({ input }) => {
     createChallengeQuery.run(input);
     return getChallenge(input.id);
   }),
@@ -44,7 +44,7 @@ export const authRouter = router({
   me: protectedProcedure.query(({ ctx }) => ctx.player),
   login: procedure
     .input(z.object({ email: z.string(), password: z.string() }))
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const player = getPlayerByEmail(input.email);
       if (!player) {
         throw new TRPCError({
@@ -64,7 +64,7 @@ export const authRouter = router({
     .input(
       z.object({ email: z.string(), password: z.string(), name: z.string() }),
     )
-    .query(async ({ input }) => {
+    .mutation(async ({ input }) => {
       const player = getPlayerByEmail(input.email);
       if (player) {
         throw new TRPCError({

@@ -13,7 +13,7 @@ type AuthStore = {
   setToken: (token: string | null) => void;
 };
 
-const useAuth = create<AuthStore>((set) => ({
+export const useAuth = create<AuthStore>((set) => ({
   token: null,
   setToken: (token) => set({ token }),
 }));
