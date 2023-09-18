@@ -1,5 +1,10 @@
+import { trpc } from "../trpc";
+
 export function Home() {
+  // trpc.challenge.challenges.useQuery();
+
   const players: any[] = [];
+
   const challenges: any[] = [];
   const today = new Date().toISOString().split("T")[0];
   const tc: any = null;
