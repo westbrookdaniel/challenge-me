@@ -35,7 +35,7 @@ function LoginForm() {
   const form = useForm<FormState>({
     onSubmit: async (s) => {
       const { name, email, password } = s;
-      if (!name) return setErrors({ password: "Name is required" });
+      if (!name) return setErrors({ name: "Name is required" });
       if (!email) return setErrors({ email: "Email is required" });
       if (!password) return setErrors({ password: "Password is required" });
       setErrors({});
