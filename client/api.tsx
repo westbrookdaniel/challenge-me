@@ -3,4 +3,4 @@ import type { App } from "../server";
 
 const app = edenTreaty<App>("http://localhost:3000");
 
-const foo = app.api.get()
+const foo = app.api.get();

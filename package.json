@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@elysiajs/cookie": "^0.6.1",
-    "@elysiajs/eden": "^0.6.5",
+    "@elysiajs/eden": "^0.6.3",
     "@elysiajs/jwt": "^0.6.4",
     "@hono/zod-validator": "^0.1.8",
     "elysia": "^0.6.23",
