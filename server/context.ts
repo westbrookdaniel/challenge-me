@@ -12,7 +12,9 @@ const jwtSchema = z.object({ id: z.string() });
 
 export const jwt = {
   verify: async (token: string) => {
-    const { payload } = await jose.jwtVerify(token, secret);
+    const { payload } = await jose.jwtVerify(token, secret, {
+      algorithms: ["HS256"],
+    });
     try {
       const player = getPlayer(jwtSchema.parse(payload).id);
       return player;
@@ -22,7 +24,10 @@ export const jwt = {
     }
   },
   sign: async (payload: z.infer<typeof jwtSchema>) => {
-    return new jose.SignJWT(payload).setExpirationTime("7d").sign(secret);
+    return new jose.SignJWT(payload)
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("7d")
+      .sign(secret);
   },
 };
 

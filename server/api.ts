@@ -27,10 +27,25 @@ export const challengeRouter = router({
   challengeByDate: procedure
     .input(z.object({ date: z.string() }))
     .query(({ input }) => getChallengeByDate(input.date)),
-  createChallenge: protectedProcedure.input(DbChallenge).mutation(({ input }) => {
-    createChallengeQuery.run(input);
-    return getChallenge(input.id);
-  }),
+  createChallenge: protectedProcedure
+    .input(
+      z.object({
+        player1Id: z.string(),
+        player2Id: z.string(),
+        // Formatted as `YYYY-MM-DD`
+        date: z.string(),
+      }),
+    )
+    .mutation(({ input }) => {
+      const id = crypto.randomUUID();
+      createChallengeQuery.run({
+        $id: id,
+        $player1Id: input.player1Id,
+        $player2Id: input.player2Id,
+        $date: input.date,
+      });
+      return getChallenge(id);
+    }),
 });
 
 export const playerRouter = router({
@@ -52,7 +67,7 @@ export const authRouter = router({
           message: "Invalid email or password",
         });
       }
-      if (await Bun.password.verify(input.password, player.password)) {
+      if (!(await Bun.password.verify(input.password, player.password))) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Invalid email or password",
@@ -75,12 +90,12 @@ export const authRouter = router({
       const id = crypto.randomUUID();
       const password = await Bun.password.hash(input.password);
       const newPlayer = {
-        id,
-        password,
-        email: input.email,
-        name: input.name,
+        $id: id,
+        $password: password,
+        $email: input.email,
+        $name: input.name,
       };
       createPlayerQuery.run(newPlayer);
-      return { token: await jwt.sign({ id: newPlayer.id }) };
+      return { token: await jwt.sign({ id: newPlayer.$id }) };
     }),
 });
