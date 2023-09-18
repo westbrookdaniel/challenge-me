@@ -61,7 +61,7 @@ function LoginForm() {
         />
         <span className="text-red-500 text-sm">{errors.name}</span>
       </label>
-      <label className="block">
+      <label className="block mt-2">
         <span>Email</span>
         <input
           type="email"
