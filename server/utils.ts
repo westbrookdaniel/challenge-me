@@ -1,4 +1,3 @@
-import { Value } from "@sinclair/typebox/value";
 import { Challenge, DbChallenge, Player, db } from "./db";
 
 export function getPlayers() {
@@ -11,8 +10,7 @@ export function getPlayer(id: string) {
     .query("SELECT * FROM players WHERE id = $id")
     .get({ $id: id });
   if (!data) return null;
-  if (!Value.Check(Player, data)) throw new Error("Invalid");
-  return data;
+  return Player.parse(data);
 }
 
 export function getPlayerByEmail(email: string) {
@@ -20,15 +18,14 @@ export function getPlayerByEmail(email: string) {
     .query("SELECT * FROM players WHERE email = $email")
     .get({ $email: email });
   if (!data) return null;
-  if (!Value.Check(Player, data)) throw new Error("Invalid");
-  return data;
+  return Player.parse(data);
 }
 
 export function getChallenges() {
   const data = db.query("SELECT * FROM challenges").all();
   const players = getPlayers();
-  return data.map((c) => {
-    if (!Value.Check(DbChallenge, c)) throw new Error("Invalid");
+  return data.map((_c) => {
+    const c = DbChallenge.parse(_c);
     const player1 = players.find((p) => p.id === c.player1Id);
     const player2 = players.find((p) => p.id === c.player2Id);
     if (!player1 || !player2) {
@@ -43,13 +40,13 @@ export function getChallengeByDate(date: string) {
     .query("SELECT * FROM challenges WHERE date = $date")
     .get({ $date: date });
   if (!data) return null;
-  if (!Value.Check(DbChallenge, data)) throw new Error("Invalid");
-  const player1 = getPlayer(data.player1Id);
-  const player2 = getPlayer(data.player2Id);
+  const c = DbChallenge.parse(data);
+  const player1 = getPlayer(c.player1Id);
+  const player2 = getPlayer(c.player2Id);
   if (!player1 || !player2) {
-    throw new Error(`Players for challenge ${data.id} not found`);
+    throw new Error(`Players for challenge ${c.id} not found`);
   }
-  return { ...data, player1, player2 };
+  return Challenge.parse({ ...c, player1, player2 });
 }
 
 export function getChallenge(id: string) {
@@ -57,11 +54,11 @@ export function getChallenge(id: string) {
     .query("SELECT * FROM challenges WHERE id = $id")
     .get({ $id: id });
   if (!data) return null;
-  if (!Value.Check(DbChallenge, data)) throw new Error("Invalid");
-  const player1 = getPlayer(data.player1Id);
-  const player2 = getPlayer(data.player2Id);
+  const c = DbChallenge.parse(data);
+  const player1 = getPlayer(c.player1Id);
+  const player2 = getPlayer(c.player2Id);
   if (!player1 || !player2) {
-    throw new Error(`Players for challenge ${data.id} not found`);
+    throw new Error(`Players for challenge ${c.id} not found`);
   }
-  return { ...data, player1, player2 };
+  return Challenge.parse({ ...c, player1, player2 });
 }

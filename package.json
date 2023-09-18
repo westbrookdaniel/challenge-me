@@ -1,20 +1,17 @@
 {
   "type": "module",
   "scripts": {
-    "dev:server": "bun run --watch server/index.tsx",
+    "dev:server": "bun run --watch server/index.ts",
     "dev:client": "bunx --bun vite",
     "build": "bunx --bun vite build"
   },
   "dependencies": {
-    "@elysiajs/cookie": "^0.6.1",
-    "@elysiajs/eden": "^0.6.3",
-    "@elysiajs/jwt": "^0.6.4",
-    "@hono/zod-validator": "^0.1.8",
-    "elysia": "^0.6.23",
+    "@trpc/server": "^10.38.3",
+    "jose": "^4.14.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "swr": "^2.2.2",
-    "wouter": "^2.11.0"
+    "wouter": "^2.11.0",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
     "bun-types": "^1.0.2",
