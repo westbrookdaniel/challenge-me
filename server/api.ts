@@ -1,12 +1,23 @@
 import { z } from "zod";
-import { procedure, router } from "./context";
+import { jwt, procedure, protectedProcedure, router } from "./context";
 import {
   getChallenge,
   getChallenges,
   getPlayer,
   getPlayers,
   getChallengeByDate,
+  getPlayerByEmail,
 } from "./utils";
+import { db, DbChallenge } from "./db";
+import { TRPCError } from "@trpc/server";
+
+const createChallengeQuery = db.query(
+  "INSERT INTO challenges (id, player1Id, player2Id, date) VALUES ($id, $player1Id, $player2Id, $date)",
+);
+
+const createPlayerQuery = db.query(
+  "INSERT INTO players (id, name, password, email) VALUES ($id, $name, $password, $email)",
+);
 
 export const challengeRouter = router({
   challenges: procedure.query(() => getChallenges()),
@@ -16,6 +27,10 @@ export const challengeRouter = router({
   challengeByDate: procedure
     .input(z.object({ date: z.string() }))
     .query(({ input }) => getChallengeByDate(input.date)),
+  createChallenge: protectedProcedure.input(DbChallenge).query(({ input }) => {
+    createChallengeQuery.run(input);
+    return getChallenge(input.id);
+  }),
 });
 
 export const playerRouter = router({
@@ -25,89 +40,47 @@ export const playerRouter = router({
     .query(({ input }) => getPlayer(input.id)),
 });
 
-// .get("/me", async (c) => {
-//   const player = await c.jwt.verify(c.cookie.auth);
-//   if (!player) {
-//     c.set.status = 401;
-//     return "Unauthorized";
-//   }
-//   return getPlayer(player.id);
-// })
-
-// .post(
-//   "/challenges",
-//   async (c) => {
-//     const player = await c.jwt.verify(c.cookie.auth);
-//     if (!player) {
-//       c.set.status = 401;
-//       return "Unauthorized";
-//     }
-
-//     db.query(
-//       "INSERT INTO challenges (id, player1Id, player2Id, date) VALUES ($id, $player1Id, $player2Id, $date)",
-//     ).run(c.body);
-
-//     return getChallenge(c.body.id);
-//   },
-//   {
-//     body: DbChallenge,
-//   },
-// )
-
-// .post(
-//   "/login",
-//   async (c) => {
-//     const player = getPlayerByEmail(c.body.email);
-//     if (!player) {
-//       c.set.status = 401;
-//       return "Invalid email or password";
-//     }
-//     if (await Bun.password.verify(c.body.password, player.password)) {
-//       c.set.status = 401;
-//       return "Invalid email or password";
-//     }
-
-//     c.setCookie("auth", await c.jwt.sign({ id: player.id }), {
-//       maxAge: 60 * 60 * 24 * 7, // 1 week
-//     });
-
-//     return player;
-//   },
-//   {
-//     body: t.Object({ email: t.String(), password: t.String() }),
-//   },
-// )
-
-// .post(
-//   "/signup",
-//   async (c) => {
-//     const player = getPlayerByEmail(c.body.email);
-//     if (player) {
-//       c.set.status = 401;
-//       return "Email already in use";
-//     }
-//     const id = crypto.randomUUID();
-//     const password = await Bun.password.hash(c.body.password);
-//     const newPlayer = {
-//       id,
-//       password,
-//       email: c.body.email,
-//       name: c.body.name,
-//     };
-//     db.query(
-//       "INSERT INTO players (id, name, password, email) VALUES ($id, $name, $password, $email)",
-//     ).run(newPlayer);
-
-//     return newPlayer;
-//   },
-//   {
-//     body: t.Object({
-//       email: t.String(),
-//       password: t.String(),
-//       name: t.String(),
-//     }),
-//   },
-// )
-// .listen(3000);
-
-// export type App = typeof app;
+export const authRouter = router({
+  me: protectedProcedure.query(({ ctx }) => ctx.player),
+  login: procedure
+    .input(z.object({ email: z.string(), password: z.string() }))
+    .query(async ({ input }) => {
+      const player = getPlayerByEmail(input.email);
+      if (!player) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid email or password",
+        });
+      }
+      if (await Bun.password.verify(input.password, player.password)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid email or password",
+        });
+      }
+      return { token: await jwt.sign({ id: player.id }) };
+    }),
+  signup: procedure
+    .input(
+      z.object({ email: z.string(), password: z.string(), name: z.string() }),
+    )
+    .query(async ({ input }) => {
+      const player = getPlayerByEmail(input.email);
+      if (player) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Email already in use",
+        });
+      }
+      const id = crypto.randomUUID();
+      const password = await Bun.password.hash(input.password);
+      const newPlayer = {
+        id,
+        password,
+        email: input.email,
+        name: input.name,
+      };
+      createPlayerQuery.run(newPlayer);
+      return { token: await jwt.sign({ id: newPlayer.id }) };
+    }),
+});
