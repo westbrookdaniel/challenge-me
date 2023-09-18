@@ -1,13 +1,6 @@
-import { InferRequestType, hc } from "hono/client";
-import { ApiType } from "../server/api";
+import { edenTreaty } from "@elysiajs/eden";
+import type { App } from "../server";
 
-const client = hc<ApiType>("/api");
+const app = edenTreaty<App>("http://localhost:3000");
 
-client.challenges.$get();
-
-// const fetcher =
-//   <T,>($get: T, arg: InferRequestType<T>) =>
-//   async () => {
-//     const res = await $get(arg);
-//     return await res.json();
-//   };
+const foo = app.api.get()

@@ -1,5 +1,5 @@
 import { Database } from "bun:sqlite";
-import { z } from "zod";
+import { t } from "elysia";
 
 export const db = new Database("db.sqlite", { create: true });
 db.run(
@@ -9,29 +9,29 @@ db.run(
   "CREATE TABLE IF NOT EXISTS challenges (id TEXT PRIMARY KEY, player1Id TEXT NOT NULL, player2Id TEXT NOT NULL, date TEXT NOT NULL)",
 );
 
-export const DbPlayer = z.object({
-  id: z.string(),
-  name: z.string(),
-  password: z.string(),
+export const DbPlayer = t.Object({
+  id: t.String(),
+  name: t.String(),
+  password: t.String(),
   // Unique email
-  email: z.string(),
+  email: t.String(),
 });
 
 export const Player = DbPlayer;
 
-export const DbChallenge = z.object({
-  id: z.string(),
-  player1Id: z.string(),
-  player2Id: z.string(),
+export const DbChallenge = t.Object({
+  id: t.String(),
+  player1Id: t.String(),
+  player2Id: t.String(),
   // Formatted as `YYYY-MM-DD`
-  date: z.string(),
+  date: t.String(),
 });
 
-export const Challenge = z.object({
-  id: z.string(),
-  player1Id: z.string(),
+export const Challenge = t.Object({
+  id: t.String(),
+  player1Id: t.String(),
   player1: Player,
-  player2Id: z.string(),
+  player2Id: t.String(),
   player2: Player,
-  date: z.string(),
+  date: t.String(),
 });

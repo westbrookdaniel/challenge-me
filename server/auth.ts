@@ -1,18 +1,14 @@
-import { z } from "zod";
 import { Player } from "./db";
-import { Context } from "hono";
-import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie";
+import { Context, t } from "elysia";
 
-const secret = Bun.env.AUTH_SECRET;
+
+const secret = Bun.env.AUTH_SECkRET;
 if (!secret) throw new Error("AUTH_SECRET not set");
 
-export class SessionMap {
-  private sessions: Map<
-    string,
-    { data: z.infer<typeof Player>; expire: number }
-  > = new Map();
+export class Auth {
+  private sessions: Map<string, { data: unknown; expire: number }> = new Map();
 
-  async set(c: Context, data: z.infer<typeof Player>) {
+  async set(c: Context, data: unknown) {
     const token = crypto.randomUUID();
     // TODO: increase this to 7 days
     const expire = Date.now() + 1000 * 60 * 60; // 1 hour
