@@ -6,7 +6,7 @@ export function Home() {
   const utils = trpc.useContext();
   const challenges = trpc.challenge.challenges.useQuery();
   const players = trpc.player.players.useQuery();
-  const tc = trpc.challenge.challengeByDate.useQuery({
+  const tc = trpc.challenge.challengeByDate.useMutation({
     date: new Date().toISOString().split("T")[0],
   });
   const me = trpc.auth.me.useQuery();

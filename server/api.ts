@@ -26,7 +26,25 @@ export const challengeRouter = router({
     .query(({ input }) => getChallenge(input.id)),
   challengeByDate: procedure
     .input(z.object({ date: z.string() }))
-    .query(({ input }) => getChallengeByDate(input.date)),
+    .query(({ input }) => {
+      const tc = getChallengeByDate(input.date);
+      if (tc) return tc;
+      const players = getPlayers();
+      if (players.length < 2) return null;
+
+      const randomPlayers = players.sort(() => 0.5 - Math.random());
+      const [player1, player2] = randomPlayers.slice(0, 2);
+
+      const id = crypto.randomUUID();
+      createChallengeQuery.run({
+        $id: id,
+        $player1Id: player1.id,
+        $player2Id: player2.id,
+        $date: input.date,
+      });
+
+      return getChallenge(id);
+    }),
   createChallenge: protectedProcedure
     .input(
       z.object({
