@@ -2,4 +2,4 @@
 bun install
 ```
 
-TODO
+TODO: Update this
