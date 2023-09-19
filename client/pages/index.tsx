@@ -72,7 +72,7 @@ export function Home() {
               </p>
             </div>
             <Link href={`/challenge/${tc.data.id}`}>
-              <a className="button w-[150px] mt-4 text-sm py-1 bg-white">
+              <a className="button w-[150px] mt-8 text-sm py-1 bg-white">
                 Declare Winner
               </a>
             </Link>
