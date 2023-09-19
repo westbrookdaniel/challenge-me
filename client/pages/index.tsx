@@ -20,7 +20,7 @@ export function Home() {
           </p>
         </div>
 
-        <div className="flex space-x-2 items-center self-end">
+        <div className="flex space-x-2 items-center self-end md:self-start">
           {me.data ? (
             <>
               <p className="p-2">Hello {me.data.name}</p>
