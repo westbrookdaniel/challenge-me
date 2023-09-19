@@ -17,4 +17,4 @@ const { listen } = createHTTPServer({
   createContext,
 });
 
-listen(3000);
+listen(Bun.env.PORT ? parseInt(Bun.env.PORT) : 3000);
