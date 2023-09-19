@@ -8,7 +8,7 @@ import {
   getChallengeByDate,
   getPlayerByEmail,
 } from "./utils";
-import { db, DbChallenge } from "./db";
+import { db } from "./db";
 import { TRPCError } from "@trpc/server";
 
 const createChallengeQuery = db.query(
