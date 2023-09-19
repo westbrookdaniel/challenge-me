@@ -45,7 +45,7 @@ export function Home() {
       </div>
 
       <div className="mt-16">
-        <h2 className="text-4xl font-bold">Todays Challenge</h2>
+        <h2 className="text-4xl font-bold">{"Today's Challenge"}</h2>
         {tc.data ? (
           <p className="mt-4">
             {tc.data.date} - {tc.data.player1.name} v {tc.data.player2.name}
