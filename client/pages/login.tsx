@@ -2,7 +2,7 @@ import { useForm } from "@westbrookdaniel/form/react";
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "../trpc";
-import { useAuth } from "../main";
+import { useAuth } from "../App";
 
 export function Login() {
   return (

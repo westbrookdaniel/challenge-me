@@ -1,12 +1,12 @@
 import { Link } from "wouter";
 import { trpc } from "../trpc";
-import { useAuth } from "../main";
+import { useAuth } from "../App";
 
 export function Home() {
   const utils = trpc.useContext();
   const challenges = trpc.challenge.challenges.useQuery();
   const players = trpc.player.players.useQuery();
-  const tc = trpc.challenge.challengeByDate.useMutation({
+  const tc = trpc.challenge.challengeByDate.useQuery({
     date: new Date().toISOString().split("T")[0],
   });
   const me = trpc.auth.me.useQuery();
@@ -60,7 +60,7 @@ export function Home() {
         <ul className="mt-2">
           {players.data?.length === 0 && <li>No players yet</li>}
           {players.data?.map((p: any) => (
-            <li>
+            <li key={p.id}>
               {p.name} ({p.email})
             </li>
           ))}
@@ -72,7 +72,7 @@ export function Home() {
         <ul className="mt-2">
           {challenges.data?.length === 0 && <li>No challenges yet</li>}
           {challenges.data?.map((c: any) => (
-            <li>
+            <li key={c.id}>
               {c.date} - {c.player1.name} v {c.player2.name}
             </li>
           ))}

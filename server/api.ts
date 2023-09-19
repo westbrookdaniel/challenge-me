@@ -74,7 +74,7 @@ export const playerRouter = router({
 });
 
 export const authRouter = router({
-  me: protectedProcedure.query(({ ctx }) => ctx.player),
+  me: procedure.query(({ ctx }) => ctx.player),
   login: procedure
     .input(z.object({ email: z.string(), password: z.string() }))
     .mutation(async ({ input }) => {
