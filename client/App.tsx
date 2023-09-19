@@ -9,8 +9,8 @@ import { Signup } from "./pages/signup";
 import { persist } from "zustand/middleware";
 import { Home } from "./pages";
 
-const url = import.meta.env.VITE_APP_API_URL;
-if (!url) throw new Error("Missing VITE_APP_API_URL");
+const defaultUrl = `https://${window.location.hostname}/trpc`;
+const url = import.meta.env.VITE_APP_API_URL || defaultUrl;
 
 type AuthStore = {
   token: string | null;
