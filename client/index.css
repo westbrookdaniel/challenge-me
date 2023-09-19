@@ -5,12 +5,17 @@
 @layer components {
   button,
   .button {
-    @apply block bg-stone-200 px-4 py-2 rounded-md hover:bg-stone-100 transition-colors duration-100 ease-out active:bg-stone-200 focus:border-stone-400 focus:ring-1 focus:ring-stone-400 outline-none;
-  }
-  button[aria-disabled="true"] {
-    @apply bg-stone-100 hover:bg-stone-100 active:bg-stone-100 text-stone-400 cursor-not-allowed;
+    @apply block bg-stone-200 px-4 py-2 rounded-md hover:bg-stone-100 transition-colors duration-100 ease-out active:bg-stone-200 focus:ring-1 focus:ring-stone-400 outline-none border border-stone-300;
   }
   button[type="submit"] {
     @apply bg-stone-200 hover:bg-stone-100 active:bg-stone-200;
+  }
+
+  button.primary,
+  .button.primary {
+    @apply bg-orange-500 text-white hover:bg-orange-400 active:bg-orange-500 focus:ring-orange-800 border border-orange-600;
+  }
+  button.primary[type="submit"] {
+    @apply bg-orange-500 text-white hover:bg-orange-400 active:bg-orange-500;
   }
 }

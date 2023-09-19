@@ -6,7 +6,7 @@ import { useAuth } from "../App";
 
 export function Signup() {
   return (
-    <main className="max-w-4xl mx-auto px-4 py-8">
+    <main className="max-w-4xl mx-auto px-4 pb-8 pt-16">
       <h1 className="text-2xl font-bold">Sign Up</h1>
       <LoginForm />
     </main>
@@ -56,7 +56,7 @@ function LoginForm() {
         <input
           id="name"
           name="name"
-          className="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-stone-400 focus:ring focus:ring-stone-200 focus:ring-opacity-50"
+          className="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-stone-400 focus:ring focus:ring-stone-300 focus:ring-opacity-50"
           placeholder=""
         />
         <span className="text-red-500 text-sm">{errors.name}</span>
@@ -67,7 +67,7 @@ function LoginForm() {
           type="email"
           id="email"
           name="email"
-          className="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-stone-400 focus:ring focus:ring-stone-200 focus:ring-opacity-50"
+          className="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-stone-400 focus:ring focus:ring-stone-300 focus:ring-opacity-50"
           placeholder=""
         />
         <span className="text-red-500 text-sm">{errors.email}</span>
@@ -78,7 +78,7 @@ function LoginForm() {
           type="password"
           id="password"
           name="password"
-          className="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-stone-400 focus:ring focus:ring-stone-200 focus:ring-opacity-50"
+          className="mt-1 block w-full rounded-md border-stone-300 shadow-sm focus:border-stone-400 focus:ring focus:ring-stone-300 focus:ring-opacity-50"
           placeholder=""
         />
         <span className="text-red-500 text-sm">{errors.password}</span>
@@ -87,7 +87,9 @@ function LoginForm() {
         <Link href="/">
           <a className="button">Cancel</a>
         </Link>
-        <button type="submit">Sign Up</button>
+        <button type="submit" className="primary">
+          Sign Up
+        </button>
       </div>
       <p className="text-red-500 mt-2">{errors.general}</p>
     </form>
