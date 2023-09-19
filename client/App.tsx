@@ -9,6 +9,9 @@ import { Signup } from "./pages/signup";
 import { persist } from "zustand/middleware";
 import { Home } from "./pages";
 
+const url = import.meta.env.VITE_APP_API_URL;
+if (!url) throw new Error("Missing VITE_APP_API_URL");
+
 type AuthStore = {
   token: string | null;
   setToken: (token: string | null) => void;
@@ -30,7 +33,7 @@ export function App() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000",
+          url,
           // You can pass any HTTP headers you wish here
           async headers() {
             const token = useAuth.getState().token;

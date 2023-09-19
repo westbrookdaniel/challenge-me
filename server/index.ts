@@ -1,6 +1,5 @@
-import { createHTTPServer } from "@trpc/server/adapters/standalone";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { createContext, router } from "./context";
-import cors from "cors";
 import { authRouter, challengeRouter, playerRouter } from "./api";
 
 const appRouter = router({
@@ -11,10 +10,36 @@ const appRouter = router({
 
 export type AppRouter = typeof appRouter;
 
-const { listen } = createHTTPServer({
-  middleware: cors(),
-  router: appRouter,
-  createContext,
-});
+Bun.serve({
+  port: Bun.env.PORT ? parseInt(Bun.env.PORT) : 3000,
+  fetch: async (req) => {
+    if (req.method === "OPTIONS") {
+      return new Response("", {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "*",
+        },
+      });
+    }
 
-listen(Bun.env.PORT ? parseInt(Bun.env.PORT) : 3000);
+    const pathname = new URL(req.url).pathname;
+    if (!pathname.startsWith("/trpc") && Bun.env.NODE_ENV === "production") {
+      const filePath = "./dist" + pathname;
+      const file = Bun.file(filePath);
+      if (await file.exists()) return new Response(file);
+      return new Response(Bun.file("./dist/index.html"));
+    }
+
+    const res = await fetchRequestHandler({
+      endpoint: "/trpc",
+      req,
+      router: appRouter,
+      createContext,
+    });
+
+    res.headers.set("Access-Control-Allow-Origin", "*");
+
+    return res;
+  },
+});

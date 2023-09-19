@@ -1,5 +1,5 @@
 import { TRPCError, inferAsyncReturnType, initTRPC } from "@trpc/server";
-import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
+import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import * as jose from "jose";
 import { getPlayer } from "./utils";
 import { z } from "zod";
@@ -32,10 +32,11 @@ export const jwt = {
 };
 
 // This is how you initialize a context for the server
-export async function createContext({ req }: CreateHTTPContextOptions) {
+export async function createContext({ req }: FetchCreateContextFnOptions) {
   async function getUserFromHeader() {
-    if (req.headers.authorization) {
-      const token = req.headers.authorization.split(" ")[1];
+    const auth = req.headers.get("authorization");
+    if (auth?.startsWith("Bearer ")) {
+      const token = auth.split(" ")[1];
       return await jwt.verify(token);
     }
     return null;
