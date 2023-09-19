@@ -26,7 +26,13 @@ type FormErrors = {
 
 function LoginForm() {
   const [_location, setLocation] = useLocation();
-  const login = trpc.auth.login.useMutation();
+  const utils = trpc.useContext();
+  const login = trpc.auth.login.useMutation({
+    onSuccess: () => {
+      utils.auth.me.invalidate();
+      utils.auth.me.refetch();
+    },
+  });
 
   const [errors, setErrors] = useState<FormErrors>({});
 

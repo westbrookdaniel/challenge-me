@@ -3,6 +3,7 @@ import { trpc } from "../trpc";
 import { useAuth } from "../main";
 
 export function Home() {
+  const utils = trpc.useContext();
   const challenges = trpc.challenge.challenges.useQuery();
   const players = trpc.player.players.useQuery();
   const tc = trpc.challenge.challengeByDate.useQuery({
@@ -23,6 +24,7 @@ export function Home() {
             <button
               onClick={() => {
                 useAuth.getState().setToken(null);
+                utils.auth.me.invalidate();
                 me.refetch();
               }}
             >
