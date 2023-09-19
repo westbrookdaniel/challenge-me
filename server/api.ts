@@ -7,6 +7,7 @@ import {
   getPlayers,
   getChallengeByDate,
   getPlayerByEmail,
+  getPlayersWithChallenges,
 } from "./utils";
 import { db } from "./db";
 import { TRPCError } from "@trpc/server";
@@ -89,7 +90,7 @@ export const challengeRouter = router({
 });
 
 export const playerRouter = router({
-  players: procedure.query(() => getPlayers()),
+  players: procedure.query(() => getPlayersWithChallenges()),
   playerById: procedure
     .input(z.object({ id: z.string() }))
     .query(({ input }) => getPlayer(input.id)),

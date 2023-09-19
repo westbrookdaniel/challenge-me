@@ -90,14 +90,17 @@ export function Home() {
       </div>
 
       <div className="mt-16">
-        <h2 className="text-xl font-bold">Players</h2>
+        <h2 className="text-xl font-bold">Leaderboard</h2>
         <ul className="mt-2">
           {players.data?.length === 0 && <li>No players yet</li>}
-          {players.data?.map((p: any) => (
-            <li key={p.id}>
-              {p.name} ({p.email})
-            </li>
-          ))}
+          {players.data
+            ?.map((p: any) => ({ ...p, wins: getWins(p) }))
+            .sort((a: any, b: any) => b.wins - a.wins)
+            .map((p: any) => (
+              <li key={p.id}>
+                {p.wins} - {p.name} ({p.email})
+              </li>
+            ))}
         </ul>
       </div>
 
@@ -132,4 +135,17 @@ function getResultText(result: any, c: any) {
     default:
       return "Undecided";
   }
+}
+
+// TODO: type this
+function getWins(player: any) {
+  return player.challenges.reduce((acc: number, c: any) => {
+    if (c.result?.winner === "player1" && c.player1.id === player.id) {
+      return acc + 1;
+    }
+    if (c.result?.winner === "player2" && c.player2.id === player.id) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
 }

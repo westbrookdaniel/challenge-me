@@ -5,6 +5,18 @@ export function getPlayers() {
   return data.map((p) => Player.parse(p));
 }
 
+export function getPlayersWithChallenges() {
+  const data = db.query("SELECT * FROM players").all();
+  const challenges = getChallenges();
+  return data.map((p) => {
+    const player = Player.parse(p);
+    const playerChallenges = challenges.filter(
+      (c) => c.player1Id === player.id || c.player2Id === player.id,
+    );
+    return { ...player, challenges };
+  });
+}
+
 export function getPlayer(id: string) {
   const data = db
     .query("SELECT * FROM players WHERE id = $id")
