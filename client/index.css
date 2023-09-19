@@ -2,10 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+p,
+li,
+a {
+  @apply text-stone-700;
+}
+
 @layer components {
   button,
   .button {
-    @apply block bg-stone-200 px-4 py-2 rounded-md hover:bg-stone-100 transition-colors duration-100 ease-out active:bg-stone-200 focus:ring-1 focus:ring-stone-400 outline-none border border-stone-300;
+    @apply text-black block bg-stone-200 px-4 py-2 rounded-md hover:bg-stone-100 transition-colors duration-100 ease-out active:bg-stone-200 focus:ring-1 focus:ring-stone-400 outline-none border border-stone-300 text-center;
   }
   button[type="submit"] {
     @apply bg-stone-200 hover:bg-stone-100 active:bg-stone-200;
