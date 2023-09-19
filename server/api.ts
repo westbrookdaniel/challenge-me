@@ -11,14 +11,6 @@ import {
 import { db } from "./db";
 import { TRPCError } from "@trpc/server";
 
-const createChallengeQuery = db.query(
-  "INSERT INTO challenges (id, player1Id, player2Id, date) VALUES ($id, $player1Id, $player2Id, $date)",
-);
-
-const createPlayerQuery = db.query(
-  "INSERT INTO players (id, name, password, email) VALUES ($id, $name, $password, $email)",
-);
-
 export const challengeRouter = router({
   challenges: procedure.query(() => getChallenges()),
   challengeById: procedure
@@ -36,13 +28,41 @@ export const challengeRouter = router({
       const [player1, player2] = randomPlayers.slice(0, 2);
 
       const id = crypto.randomUUID();
-      createChallengeQuery.run({
+      db.query(
+        "INSERT INTO challenges (id, player1Id, player2Id, date) VALUES ($id, $player1Id, $player2Id, $date)",
+      ).run({
         $id: id,
         $player1Id: player1.id,
         $player2Id: player2.id,
         $date: input.date,
       });
 
+      return getChallenge(id);
+    }),
+  declareWinner: procedure
+    .input(z.object({ id: z.string(), winner: z.string(), info: z.string() }))
+    .mutation(({ input }) => {
+      const tc = getChallenge(input.id);
+      if (!tc) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Challenge does not exist",
+        });
+      }
+      const id = crypto.randomUUID();
+      db.query(
+        "INSERT INTO results (id, winner, info) VALUES ($id, $winner, $info)",
+      ).run({
+        $id: id,
+        $winner: input.winner,
+        $info: input.info,
+      });
+      db.query("UPDATE challenges SET resultId = $resultId WHERE id = $id").run(
+        {
+          $id: input.id,
+          $resultId: id,
+        },
+      );
       return getChallenge(id);
     }),
   createChallenge: protectedProcedure
@@ -56,7 +76,9 @@ export const challengeRouter = router({
     )
     .mutation(({ input }) => {
       const id = crypto.randomUUID();
-      createChallengeQuery.run({
+      db.query(
+        "INSERT INTO challenges (id, player1Id, player2Id, date) VALUES ($id, $player1Id, $player2Id, $date)",
+      ).run({
         $id: id,
         $player1Id: input.player1Id,
         $player2Id: input.player2Id,
@@ -113,7 +135,9 @@ export const authRouter = router({
         $email: input.email,
         $name: input.name,
       };
-      createPlayerQuery.run(newPlayer);
+      db.query(
+        "INSERT INTO players (id, name, password, email) VALUES ($id, $name, $password, $email)",
+      ).run(newPlayer);
       return { token: await jwt.sign({ id: newPlayer.$id }) };
     }),
 });

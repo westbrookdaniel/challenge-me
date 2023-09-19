@@ -1,4 +1,4 @@
-import { Challenge, DbChallenge, Player, db } from "./db";
+import { Result, Challenge, DbChallenge, Player, db } from "./db";
 
 export function getPlayers() {
   const data = db.query("SELECT * FROM players").all();
@@ -31,7 +31,8 @@ export function getChallenges() {
     if (!player1 || !player2) {
       throw new Error(`Players for challenge ${c.id} not found`);
     }
-    return Challenge.parse({ ...c, player1, player2 });
+    const result = c.resultId ? getResult(c.resultId) : null;
+    return Challenge.parse({ ...c, player1, player2, result });
   });
 }
 
@@ -46,7 +47,8 @@ export function getChallengeByDate(date: string) {
   if (!player1 || !player2) {
     throw new Error(`Players for challenge ${c.id} not found`);
   }
-  return Challenge.parse({ ...c, player1, player2 });
+  const result = c.resultId ? getResult(c.resultId) : null;
+  return Challenge.parse({ ...c, player1, player2, result });
 }
 
 export function getChallenge(id: string) {
@@ -60,5 +62,14 @@ export function getChallenge(id: string) {
   if (!player1 || !player2) {
     throw new Error(`Players for challenge ${c.id} not found`);
   }
-  return Challenge.parse({ ...c, player1, player2 });
+  const result = c.resultId ? getResult(c.resultId) : null;
+  return Challenge.parse({ ...c, player1, player2, result });
+}
+
+export function getResult(id: string) {
+  const data = db
+    .query("SELECT * FROM results WHERE id = $id")
+    .get({ $id: id });
+  if (!data) return null;
+  return Result.parse(data);
 }

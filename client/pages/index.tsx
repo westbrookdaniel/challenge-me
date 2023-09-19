@@ -66,19 +66,19 @@ export function Home() {
               <p className="text-black" title={tc.data.player1.email}>
                 {tc.data.player1.name}
               </p>
-              <p className="text-black text-2xl">vs</p>
+              <p className="text-black text-2xl">v</p>
               <p className="text-black" title={tc.data.player2.email}>
                 {tc.data.player2.name}
               </p>
             </div>
             <Link href={`/challenge/${tc.data.id}`}>
-              <a className="button w-[150px] mt-8 text-sm py-1 bg-white">
+              <a className="button w-[150px] mt-4 text-sm py-1 bg-white">
                 Declare Winner
               </a>
             </Link>
           </>
         ) : (
-          <p className="text-3xl md:text-4xl font-bold text-center mt-4 mb-2">
+          <p className="text-3xl md:text-4xl text-black font-bold text-center mt-4 mb-2">
             No challenge today (yet)
           </p>
         )}
