@@ -39,23 +39,29 @@ function Form({ id }: Props) {
   const [_location, setLocation] = useLocation();
   const utils = trpc.useContext();
   const c = trpc.challenge.challengeById.useQuery({ id });
-  const login = trpc.auth.login.useMutation({
+  const declareWinner = trpc.challenge.declareWinner.useMutation({
     onSuccess: () => {
-      utils.auth.me.invalidate();
-      utils.auth.me.refetch();
+      utils.challenge.invalidate();
     },
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
 
   const form = useForm<FormState>({
-    onSubmit: async (s) => {
-      const { winner, info } = s;
-      if (!winner) return setErrors({ winner: "Winner is required" });
+    onSubmit: async (s, form) => {
+      const { info } = s;
+
+      // TODO: this is a bug in the form library
+      const data = new FormData(form);
+      const winner = data.get("winner");
+
+      if (typeof winner !== "string" || !winner) {
+        return setErrors({ winner: "Winner is required" });
+      }
       if (!info) return setErrors({ info: "Info is required" });
       setErrors({});
       try {
-        // const { token } = await login.mutateAsync({ winner, info });
+        await declareWinner.mutateAsync({ id, winner, info });
         setLocation("/");
       } catch (err: any) {
         setErrors({ general: err?.message || "Something went wrong" });

@@ -71,9 +71,14 @@ export function Home() {
                 {tc.data.player2.name}
               </p>
             </div>
+            {tc.data.result && (
+              <p className="text-center mt-2 text-orange-600">
+                {getResultText(tc.data.result, tc.data)}
+              </p>
+            )}
             <Link href={`/challenge/${tc.data.id}`}>
               <a className="button w-[150px] mt-8 text-sm py-1 bg-white">
-                Declare Winner
+                {tc.data.result ? "Redeclare" : "Declare"} Winner
               </a>
             </Link>
           </>
@@ -102,11 +107,29 @@ export function Home() {
           {challenges.data?.length === 0 && <li>No challenges yet</li>}
           {challenges.data?.map((c: any) => (
             <li key={c.id}>
-              {c.date} - {c.player1.name} v {c.player2.name}
+              {c.date} - {c.player1.name} v {c.player2.name}{" "}
+              <span className="text-stone-400">
+                ({getResultText(c.result, c)})
+              </span>
             </li>
           ))}
         </ul>
       </div>
     </main>
   );
+}
+
+// TODO: type this
+function getResultText(result: any, c: any) {
+  console.log(c.result);
+  switch (result?.winner) {
+    case "player1":
+      return `${c.player1.name} Won - ${result.info}`;
+    case "player2":
+      return `${c.player2.name} Won - ${result.info}`;
+    case "draw":
+      return "Draw";
+    default:
+      return "Undecided";
+  }
 }
