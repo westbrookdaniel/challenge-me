@@ -1,7 +1,10 @@
 import { Database } from "bun:sqlite";
 import { z } from "zod";
 
-export const db = new Database("db.sqlite", { create: true });
+const DB_URL = Bun.env.DB_URL;
+if (!DB_URL) throw new Error("DB_URL is not defined");
+
+export const db = new Database(DB_URL, { create: true });
 db.run(
   "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE)",
 );
