@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite";
 import { z } from "zod";
 
-export const db = new Database("./db/db.sqlite", { create: true });
+export const db = new Database(Bun.env.DB_URL ?? "db.sqlite", { create: true });
 db.run(
   "CREATE TABLE IF NOT EXISTS players (id TEXT PRIMARY KEY, name TEXT NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL UNIQUE)",
 );
