@@ -48,16 +48,18 @@ export function Home() {
       </div>
 
       <div className="mt-16 w-full border border-stone-300 px-4 md:px-8 py-4 md:py-6 bg-white rounded-xl">
-        <h2 className="font-bold text-center">{"Today's Challenge"}</h2>
-        <p className="text-center text-sm">{today}</p>
+        <h2 className="font-bold text-center text-orange-600">
+          {"Today's Challenge"}
+        </h2>
+        <p className="text-center text-sm text-orange-400">{today}</p>
         {tc.data ? (
-          <div className="flex justify-center gap-4 mt-4 text-3xl md:text-4xl text-center font-bold mb-2">
+          <div className="flex justify-center items-baseline gap-4 mt-4 text-3xl md:text-4xl text-center font-bold mb-2">
             <p title={tc.data.player1.email}>{tc.data.player1.name}</p>
-            <p>v</p>
+            <p className="text-2xl">v</p>
             <p title={tc.data.player2.email}>{tc.data.player2.name}</p>
           </div>
         ) : (
-          <p className="text-3xl md:text-4xl font-bold text-center mt-4 mb-2 text-stone-300">
+          <p className="text-3xl md:text-4xl font-bold text-center mt-4 mb-2">
             No challenge today (yet)
           </p>
         )}
